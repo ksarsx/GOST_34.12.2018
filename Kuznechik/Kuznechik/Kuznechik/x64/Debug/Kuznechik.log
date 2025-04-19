@@ -1,0 +1,6 @@
+﻿  main.c
+C:\Users\egorv\source\repos\Kuznechik\Kuznechik\main.c(134,9): warning C4101: 'i': unreferenced local variable
+C:\Users\egorv\source\repos\Kuznechik\Kuznechik\main.c(162,9): warning C4101: 'i': unreferenced local variable
+C:\Users\egorv\source\repos\Kuznechik\Kuznechik\main.c(297,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+C:\Users\egorv\source\repos\Kuznechik\Kuznechik\main.c(303,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+  Kuznechik.vcxproj -> C:\Users\egorv\source\repos\Kuznechik\Kuznechik\x64\Debug\Kuznechik.exe
