@@ -2,6 +2,7 @@
 #include <locale.h>
 #include <windows.h>
 #include <wincrypt.h>
+#include <stdlib.h>
 
 // uint8_t, uint64_t
 #include <stdint.h>
@@ -309,22 +310,152 @@ void generate_key(uint8_t* key) {
     CryptReleaseContext(hCryptProv, 0);
 }
 
+// возврат шестнадцатеричной строки key
+char* key_to_hex_string(const uint8_t* key) {
+    // Каждый байт -> 2 символа (например, 0xFF -> "FF"), плюс нулевой терминатор
+    char* result = (char*)malloc(32 * 2 + 1); // 64 символа + '\0'
+    if (result == NULL) {
+        return NULL; // Ошибка выделения памяти
+    }
+
+    // Преобразуем каждый байт в два шестнадцатеричных символа
+    for (int i = 0; i < 32; i++) {
+        // Форматируем байт key[i] как два символа (например, 0xAB -> "AB")
+        sprintf(result + i * 2, "%02x", key[i]);
+    }
+
+    return result;
+}
+
+// Функция преобразует шестнадцатеричную строку в массив байтов key[32]
+int hex_string_to_key(const char* hex_str, uint8_t* key) {
+    // Проверяем длину строки: 64 символа (32 байта * 2) + возможно '\0'
+    size_t len = strlen(hex_str);
+    if (len < 64) {
+        fprintf(stderr, "Ошибка: строка слишком короткая, ожидается 64 символа\n");
+        return -1;
+    }
+
+    // Проверяем, что все символы — допустимые шестнадцатеричные (0-9, a-f, A-F)
+    for (size_t i = 0; i < 64; i++) {
+        if (!isxdigit((unsigned char)hex_str[i])) {
+            fprintf(stderr, "Ошибка: недопустимый символ '%c' на позиции %zu\n", hex_str[i], i);
+            return -1;
+        }
+    }
+
+    // Преобразуем каждую пару символов в байт
+    for (size_t i = 0; i < 32; i++) {
+        char byte_str[3] = {hex_str[i * 2], hex_str[i * 2 + 1], '\0'};
+        key[i] = (uint8_t)strtoul(byte_str, NULL, 16);
+    }
+
+    return 0; // Успех
+}
+
+uint8_t** text_to_blocks(const char* text, int* cnt) {
+    size_t text_len = strlen(text);
+    *cnt = (text_len + KUZNECHIK_BLOCK_SIZE - 1) / KUZNECHIK_BLOCK_SIZE;
+
+    uint8_t** blocks = malloc(*cnt * sizeof(uint8_t*));
+    if (blocks == NULL) {
+        fprintf(stderr, "Ошибка: не удалось выделить память для указателей\n");
+        *cnt = 0;
+        return NULL;
+    }
+
+    for (int i = 0; i < *cnt; i++) {
+        blocks[i] = malloc(KUZNECHIK_BLOCK_SIZE);
+        if (blocks[i] == NULL) {
+            for (int j = 0; j < i; j++) free(blocks[j]);
+            free(blocks);
+            fprintf(stderr, "Ошибка: не удалось выделить память для блока\n");
+            *cnt = 0;
+            return NULL;
+        }
+        size_t start = i * KUZNECHIK_BLOCK_SIZE;
+        size_t copy_len = text_len - start > KUZNECHIK_BLOCK_SIZE ? KUZNECHIK_BLOCK_SIZE : text_len - start;
+        memcpy(blocks[i], text + start, copy_len);
+        for (size_t j = copy_len; j < KUZNECHIK_BLOCK_SIZE; j++) {
+            blocks[i][j] = 0;
+        }
+    }
+
+    return blocks;
+}
+
+
+
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "ru");
 
-    printf("Напишите 0, если хотите сгенерировать 32 битный ключ и зашифровать текст\nНапишите 1, если у вас есть 32 битный ключ и вы хотите дешифровать текст\n");
+    printf("Напишите 0, если хотите зашифровать текст\nНапишите 1, если у вас есть 32 битный ключ и вы хотите дешифровать текст\n");
     
     int mode;
     scanf("%d", &mode);
 
     if (!mode) { // генерация
 
-        // Ключ (256 бит = 32 байт)
+        printf("Если у вас есть свой ключ шифрования нажмите 0\nЕсли хотите сгенерировать новый, нажмите 1\n");
+        scanf("%d", &mode);
+
         uint8_t key[32];
-        generate_key(key);
 
+        if (!mode) {
+            char* key_str_16 = (char*)malloc(sizeof(char) * 64);
+            scanf("%s", key_str_16);
+            hex_string_to_key(key_str_16, key);
+        }
+        else {
+            generate_key(key);
+            char* key_str_16 = key_to_hex_string(key);
+            printf("\nВаш сгенерированный ключ - %s\n\n", key_str_16);
+        }
 
+        // Итерационные ключи
+        chunk round_keys[10] = {0};  
+
+        // Генерация итерационных ключей
+        gen_round_keys(key, round_keys);
+        
+        // Вывод итерационных ключей
+        printf("Итерацционные ключи:\n");
+        for (int i = 0; i < 10; i++) print_chunk(round_keys[i]);
+
+        ////////////////////////////////////////////////////////////////
+
+        char open_text[500];
+        int cnt = 0;
+        while (1) {
+            scanf("%c", &open_text[cnt]);
+            if (open_text[cnt] == '~') {
+                open_text[cnt] = '\0';
+                break;
+            }
+            cnt++;
+        }
+        
+        
+
+        int* num_of_blocks = (int*)malloc(sizeof(int));
+        uint8_t** blocks = text_to_blocks(open_text, num_of_blocks);
+        
+        /*
+        for (int i = 0; i < *num_of_blocks; i++) {
+            for (int j = 0; j < 16; j++) {
+                printf("%02x ", blocks[i][j]);
+            }
+            printf("\n");
+        }*/
+
+        for (int i = 0; i < *num_of_blocks; i++) {
+            // Открытые данные
+            uint8_t* data = blocks[i];
+            
+        }
+
+        
 
     }
     else { // дешифрование

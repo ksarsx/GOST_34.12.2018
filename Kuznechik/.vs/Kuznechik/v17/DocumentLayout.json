@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\egorv\\source\\repos\\Kuznechik\\",
+  "WorkspaceRootPath": "C:\\daila\\home\\projects\\gost_34.12.2018\\Kuznechik\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FBC54BBD-45BD-4F09-A19A-F4C0EE78C2F2}|Kuznechik\\Kuznechik.vcxproj|C:\\Users\\egorv\\source\\repos\\Kuznechik\\Kuznechik\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{FBC54BBD-45BD-4F09-A19A-F4C0EE78C2F2}|Kuznechik\\Kuznechik.vcxproj|C:\\daila\\home\\projects\\gost_34.12.2018\\Kuznechik\\Kuznechik\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FBC54BBD-45BD-4F09-A19A-F4C0EE78C2F2}|Kuznechik\\Kuznechik.vcxproj|solutionrelative:Kuznechik\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -20,11 +20,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "main.c",
-              "DocumentMoniker": "C:\\Users\\egorv\\source\\repos\\Kuznechik\\Kuznechik\\main.c",
+              "DocumentMoniker": "C:\\daila\\home\\projects\\gost_34.12.2018\\Kuznechik\\Kuznechik\\main.c",
               "RelativeDocumentMoniker": "Kuznechik\\main.c",
-              "ToolTip": "C:\\Users\\egorv\\source\\repos\\Kuznechik\\Kuznechik\\main.c",
+              "ToolTip": "C:\\daila\\home\\projects\\gost_34.12.2018\\Kuznechik\\Kuznechik\\main.c",
               "RelativeToolTip": "Kuznechik\\main.c",
-              "ViewState": "AQIAACIBAAAAAAAAAAAAAEYBAAAAAAAA",
+              "ViewState": "AQIAALsBAAAAAAAAAAAAAMUBAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-04-19T17:29:11.723Z",
               "EditorCaption": ""
