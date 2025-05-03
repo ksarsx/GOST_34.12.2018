@@ -1,13 +1,9 @@
 ﻿  main.c
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(135,9): warning C4101: 'i': unreferenced local variable
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(163,9): warning C4101: 'i': unreferenced local variable
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(298,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(304,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(358,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(391,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(409,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(512,49): warning C4047: 'function': 'const chunk (*)' differs in levels of indirection from 'chunk'
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(512,49): warning C4024: 'chunk_to_text': different types for formal and actual parameter 1
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(521,41): warning C4047: 'function': 'chunk (*)' differs in levels of indirection from 'chunk'
-C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(521,41): warning C4024: 'hex_to_chunk': different types for formal and actual parameter 2
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(136,9): warning C4101: 'i': unreferenced local variable
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(164,9): warning C4101: 'i': unreferenced local variable
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(299,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(305,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(359,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(618,47): warning C4047: 'function': 'uint64_t *' differs in levels of indirection from 'chunk (*)'
+C:\daila\home\projects\gost_34.12.2018\Kuznechik\Kuznechik\main.c(618,47): warning C4024: 'kuznechik_encrypt': different types for formal and actual parameter 2
   Kuznechik.vcxproj -> C:\daila\home\projects\gost_34.12.2018\Kuznechik\x64\Debug\Kuznechik.exe

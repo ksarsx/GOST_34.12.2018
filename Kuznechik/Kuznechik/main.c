@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <wincrypt.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // uint8_t, uint64_t
 #include <stdint.h>
@@ -385,7 +386,7 @@ uint8_t** text_to_blocks(const char* text, int* cnt) {
 }
 
 
-
+/*
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "ru");
@@ -425,35 +426,41 @@ int main(int argc, char *argv[])
 
         ////////////////////////////////////////////////////////////////
 
-        char open_text[500];
-        int cnt = 0;
-        while (1) {
-            scanf("%c", &open_text[cnt]);
-            if (open_text[cnt] == '~') {
-                open_text[cnt] = '\0';
-                break;
-            }
-            cnt++;
-        }
         
+        // Открытые данные
+        uint8_t data[KUZNECHIK_BLOCK_SIZE] = { 
+            0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x00,
+            0xff,0xee,0xdd,0xcc,0xbb,0xaa,0x99,0x88 
+        };
+
+        // Вывод открытых данных
+        printf("Открытые данные:\n");
+        // (void*) для избежания предупреждений о неверном типе, передаваемом в функцию
+        print_chunk((void*)data);
+
+        // Зашифрованные данные
+        chunk encrypted;
+
+        // Шифрование
+        // (void*) для избежания предупреждений о неверном типе, передаваемом в функцию
+        kuznechik_encrypt(round_keys, (void*)data, encrypted);
+
+        // Вывод зашифрованных данных
+        printf("Зашифрованные данные:\n");
+        print_chunk(encrypted);
+
+        // Результат расшифровки
+        chunk decrypted;
+
+        // Расшифровка
+        kuznechik_decrypt(round_keys, encrypted, decrypted);
+
+        // Вывод зашифрованных данных
+        printf("Расшифрованные данные:\n");
+        print_chunk(decrypted);
         
 
-        int* num_of_blocks = (int*)malloc(sizeof(int));
-        uint8_t** blocks = text_to_blocks(open_text, num_of_blocks);
         
-        /*
-        for (int i = 0; i < *num_of_blocks; i++) {
-            for (int j = 0; j < 16; j++) {
-                printf("%02x ", blocks[i][j]);
-            }
-            printf("\n");
-        }*/
-
-        for (int i = 0; i < *num_of_blocks; i++) {
-            // Открытые данные
-            uint8_t* data = blocks[i];
-            
-        }
 
         
 
@@ -511,6 +518,168 @@ int main(int argc, char *argv[])
     // Вывод зашифрованных данных
     printf("Расшифрованные данные:\n");
     print_chunk(decrypted);
-    */
+    
+    return 0;
+}
+*/
+
+
+
+// Функция для ввода ровно 16 символов (дополняет нулями или обрезает)
+void input_16_chars(uint8_t* data) {
+    char input[256];
+    printf("Введите 16 символов текста (ASCII): ");
+    fgets(input, sizeof(input), stdin);
+
+    // Удаляем символ новой строки
+    size_t len = strlen(input);
+    if (len > 0 && input[len-1] == '\n') {
+        input[len-1] = '\0';
+        len--;
+    }
+
+    // Копируем до 16 символов, остальные дополняем нулями
+    memset(data, 0, KUZNECHIK_BLOCK_SIZE);
+    memcpy(data, input, len > KUZNECHIK_BLOCK_SIZE ? KUZNECHIK_BLOCK_SIZE : len);
+
+    // Выводим, что будет зашифровано
+    printf("Текст для обработки: ");
+    for (int i = 0; i < KUZNECHIK_BLOCK_SIZE; i++) {
+        printf("%c", isprint(data[i]) ? data[i] : '.');
+    }
+    printf("\n");
+}
+
+// Функция для ввода зашифрованных данных в hex-формате
+void input_hex_data(chunk encrypted) {
+    char hex[33];
+    printf("Введите зашифрованные данные (32 hex символа): ");
+    scanf("%32s", hex);
+    getchar(); // очистка буфера
+
+    // Преобразуем hex в бинарные данные
+    for (int i = 0; i < 16; i++) {
+        sscanf(hex + i*2, "%2hhx", &((uint8_t*)encrypted)[i]);
+    }
+}
+
+// Основная функция
+int main() {
+    setlocale(LC_ALL, "ru");
+
+    int mode;
+    printf("Выберите режим:\n");
+    printf("0 - Шифровать данные\n");
+    printf("1 - Дешифровать данные\n");
+    printf("Ваш выбор: ");
+    scanf("%d", &mode);
+    getchar(); // очистка буфера
+
+    if (mode == 0) {
+        // Режим шифрования
+        uint8_t data[KUZNECHIK_BLOCK_SIZE] = {0};
+        input_16_chars(data);
+
+        int key_mode;
+        printf("\nВыберите способ задания ключа:\n");
+        printf("0 - Ввести свой ключ (64 hex символа)\n");
+        printf("1 - Сгенерировать случайный ключ\n");
+        printf("Ваш выбор: ");
+        scanf("%d", &key_mode);
+        getchar(); // очистка буфера
+
+        uint8_t key[32];
+        if (key_mode == 0) {
+            char hex_key[65];
+            printf("Введите ключ (64 hex символа): ");
+            scanf("%64s", hex_key);
+            getchar(); // очистка буфера
+            hex_string_to_key(hex_key, key);
+        } else {
+            generate_key(key);
+            char* hex_key = key_to_hex_string(key);
+            printf("\nСгенерированный ключ: %s\n", hex_key);
+            free(hex_key);
+        }
+
+        // Генерация итерационных ключей
+        chunk round_keys[10] = {0};
+        gen_round_keys(key, round_keys);
+
+        // Вывод итерационных ключей
+        printf("\nИтерационные ключи:\n");
+        for (int i = 0; i < 10; i++) {
+            printf("K%d: ", i);
+            print_chunk(round_keys[i]);
+        }
+
+        // Шифрование
+        chunk encrypted;
+        kuznechik_encrypt(round_keys, (chunk*)data, encrypted);
+
+        // Вывод зашифрованных данных
+        printf("\nЗашифрованные данные (hex): ");
+        for (int i = 0; i < 16; i++) {
+            printf("%02x", ((uint8_t*)encrypted)[i]);
+        }
+        printf("\n");
+
+        // Дешифровка для проверки
+        chunk decrypted;
+        kuznechik_decrypt(round_keys, encrypted, decrypted);
+
+        // Вывод дешифрованных данных
+        printf("\nПроверка дешифровки: ");
+        for (int i = 0; i < 16; i++) {
+            printf("%c", isprint(((uint8_t*)decrypted)[i]) ? ((uint8_t*)decrypted)[i] : '.');
+        }
+        printf("\n");
+
+    } else if (mode == 1) {
+        // Режим дешифрования
+        char hex_key[65];
+        printf("Введите ключ (64 hex символа): ");
+        scanf("%64s", hex_key);
+        getchar(); // очистка буфера
+
+        uint8_t key[32];
+        hex_string_to_key(hex_key, key);
+
+        chunk encrypted;
+        input_hex_data(encrypted);
+
+        // Генерация итерационных ключей
+        chunk round_keys[10] = {0};
+        gen_round_keys(key, round_keys);
+
+        // Вывод итерационных ключей
+        printf("\nИтерационные ключи:\n");
+        for (int i = 0; i < 10; i++) {
+            printf("K%d: ", i);
+            print_chunk(round_keys[i]);
+        }
+
+        // Дешифровка
+        chunk decrypted;
+        kuznechik_decrypt(round_keys, encrypted, decrypted);
+
+        // Вывод результатов
+        printf("\nДешифрованные данные:\n");
+        printf("Hex: ");
+        for (int i = 0; i < 16; i++) {
+            printf("%02x", ((uint8_t*)decrypted)[i]);
+        }
+        printf("\n");
+
+        printf("Text: ");
+        for (int i = 0; i < 16; i++) {
+            printf("%c", isprint(((uint8_t*)decrypted)[i]) ? ((uint8_t*)decrypted)[i] : '.');
+        }
+        printf("\n");
+    } else {
+        printf("Неверный выбор режима!\n");
+        return 1;
+    }
+
     return 0;
 }
