@@ -1,0 +1,8 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (Kuznechik.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  main.c
+C:\daila\home\projects\gost_34.12.2018\decryptor\Kuznechik\main.c(136,9): warning C4101: 'i': unreferenced local variable
+C:\daila\home\projects\gost_34.12.2018\decryptor\Kuznechik\main.c(164,9): warning C4101: 'i': unreferenced local variable
+C:\daila\home\projects\gost_34.12.2018\decryptor\Kuznechik\main.c(299,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+C:\daila\home\projects\gost_34.12.2018\decryptor\Kuznechik\main.c(305,16): warning C4133: 'function': incompatible types - from 'FILE *' to 'const char *const '
+C:\daila\home\projects\gost_34.12.2018\decryptor\Kuznechik\main.c(359,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Kuznechik.vcxproj -> C:\daila\home\projects\gost_34.12.2018\decryptor\x64\Debug\decryptor.exe
