@@ -1,7 +1,9 @@
+// зашифрованный текст - 7f679d90bebc24305a468d42b9d4edcd
+// ключ шифрования - 8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef
+
 #include <stdio.h>
 #include <locale.h>
 #include <windows.h>
-#include <wincrypt.h>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -290,26 +292,6 @@ void print_chunk(chunk p)
     printf("\n");
 }
 
-// генерация ключа шифрования
-void generate_key(uint8_t* key) {
-    HCRYPTPROV hCryptProv = 0;
-
-    // Получаем криптографический контекст
-    if (!CryptAcquireContext(&hCryptProv, NULL, MS_ENHANCED_PROV, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-        printf(stderr, "Ошибка: не удалось получить криптографический контекст\n");
-        return;
-    }
-
-    // Генерируем 32 случайных байта
-    if (!CryptGenRandom(hCryptProv, 32, key)) {
-        printf(stderr, "Ошибка: не удалось сгенерировать случайные байты\n");
-        CryptReleaseContext(hCryptProv, 0);
-        return;
-    }
-
-    // Освобождаем контекст
-    CryptReleaseContext(hCryptProv, 0);
-}
 
 // возврат шестнадцатеричной строки key
 char* key_to_hex_string(const uint8_t* key) {
@@ -414,7 +396,7 @@ void input_16_chars(uint8_t* data) {
 // Функция для ввода зашифрованных данных в hex-формате
 void input_hex_data(chunk encrypted) {
     char hex[33];
-    printf("Введите зашифрованные данные (32 hex символа): ");
+    printf("Введите зашифрованные данные (32 hex символа, это 16 16ричных чисел без пробелов): ");
     scanf("%32s", hex);
     getchar(); // очистка буфера
 
@@ -435,7 +417,7 @@ int main() {
     
    // Режим дешифрования
    char hex_key[65];
-   printf("Введите ключ (64 hex символа): ");
+   printf("Введите ключ (64 hex символа, это 32 16ричных числа без пробелов) : ");
    scanf("%64s", hex_key);
    getchar(); // очистка буфера
 
