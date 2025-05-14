@@ -1,7 +1,5 @@
 ﻿  main.c
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(133,9): warning C4101: 'i': unreferenced local variable
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(161,9): warning C4101: 'i': unreferenced local variable
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(173,45): error C2059: syntax error: '}'
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(183,20): error C2059: syntax error: '}'
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(299,14): warning C4013: 'isxdigit' undefined; assuming extern returning int
-C:\daila\home\projects\gost_34.12.2018\encoder\main.c(359,29): error C2059: syntax error: '}'
+D:\daila\home\GOST_34.12.2018\encoder\main.c(137,9): warning C4101: i: неиспользованная локальная переменная
+D:\daila\home\GOST_34.12.2018\encoder\main.c(165,9): warning C4101: i: неиспользованная локальная переменная
+D:\daila\home\GOST_34.12.2018\encoder\main.c(303,14): warning C4013: isxdigit: нет определения; предполагается "extern" с возвратом типа "int"
+  Project32.vcxproj -> D:\daila\home\GOST_34.12.2018\encoder\x64\Debug\Project32.exe

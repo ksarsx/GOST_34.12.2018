@@ -1,3 +1,6 @@
+// Ключ = 8899aabbccddeeff0011223344556677fedcba98765432100123456789abcdef
+// Исходный текст = 1122334455667700ffeeddccbbaa9988 
+
 #include <stdio.h>
 #include <locale.h>
 // uint8_t, uint64_t
@@ -9,6 +12,7 @@
 #define KUZNECHIK_BLOCK_SIZE 16
 
 #define KEY_SIZE 32
+
 
 // Один блок (чанк) задается как массив двух беззнаковых целых по 64 бита
 typedef uint64_t chunk[2];
@@ -55,8 +59,8 @@ static const uint8_t Pi_reverse[] = {
 
 // Вектор линейного преобразования
 const uint8_t linear_vector[] = {
-    0x94, 0x20, 0x85, 0x10, 0xC2, 0xC0, 0x01, 0xFB,
-    0x01, 0xC0, 0xC2, 0x10, 0x85, 0x20, 0x94, 0x01
+        0x94, 0x20, 0x85, 0x10, 0xC2, 0xC0, 0x01, 0xFB,
+        0x01, 0xC0, 0xC2, 0x10, 0x85, 0x20, 0x94, 0x01
 };
 
 // Функция X 
